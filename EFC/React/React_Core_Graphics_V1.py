@@ -147,31 +147,31 @@ def idle_scrn():
 # buttons = joystickA.get_numbuttons()
 
 idle_scrn()
-#start_Time = pygame.time.Clock()
-#start = int(time.time())
-#leds.off()
-#random_num = random.randint(0, 11)
-#leds.on(random_num)
-#print(random_num)
-#while time_Out != 30:
-#    while game_Run:
-#    for event in pygame.event.get():    
-#        print("For Event started")
-#        if event.type == pygame.JOYBUTTONDOWN:
-#            print("If then, event type started")
-#            if event.button == random_num:
-#                B = event.button
-#                print(B, " button pressed, CORRECT")
-#                leds.off()
-#                random_num = random.randint(0, 11)
-#                leds.on(random_num)
-#                print(random_num)
-#                score += 1
-#    current_Time = int(time.time())
-#    time_Out = current_Time - start
-#    print("TIMER: ", time_Out)
-    #print(type(start_Time))
-    #print(current_Time)
-    #print(type(current_Time))
-#print("Your Score: ", score)
+start_Time = pygame.time.Clock()
+start = int(time.time())
+leds.off()
+random_num = random.randint(0, 11)
+leds.on(random_num)
+print(random_num)
+while time_Out != 30:
+    #while game_running:
+    for event in pygame.event.get():
+        print("For Event started")
+        if event.type == pygame.JOYBUTTONDOWN:
+            print("If then, event type started")
+            if event.button == random_num:
+                B = event.button
+                print(B, " button pressed, CORRECT")
+                leds.off()
+                random_num = random.randint(0, 11)
+                leds.on(random_num)
+                print(random_num)
+                score += 1
+    current_Time = int(time.time())
+    time_Out = current_Time - start
+    print("TIMER: ", time_Out)
+    print(type(start_Time))
+    print(current_Time)
+    print(type(current_Time))
+print("Your Score: ", score)
 exit()
