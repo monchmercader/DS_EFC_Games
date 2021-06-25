@@ -1,0 +1,15 @@
+{
+  "name": "picap-datastream-osc-js",
+  "version": "1.0.0",
+  "main": "datastream-osc.js",
+  "author": "Szymon Kaliski",
+  "license": "MIT",
+  "scripts": {
+    "start": "node datastream-osc.js"
+  },
+  "dependencies": {
+    "node-picap": "^1.0.0",
+    "omgosc": "^1.0.0",
+    "yargs": "^5.0.0"
+  }
+}

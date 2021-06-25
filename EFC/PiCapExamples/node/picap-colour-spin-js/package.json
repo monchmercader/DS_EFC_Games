@@ -1,0 +1,13 @@
+{
+  "name": "picap-colour-spin-js",
+  "version": "1.0.0",
+  "main": "colour-spin.js",
+  "author": "Szymon Kaliski",
+  "license": "MIT",
+  "scripts": {
+    "start": "node colour-spin.js"
+  },
+  "dependencies": {
+    "onoff": "^1.1.1"
+  }
+}

@@ -61,18 +61,20 @@ pygame.mouse.set_visible(0)
 # Setup the display size
 screen = pygame.display.set_mode((s_width,s_height))
 #screen = pygame.display.set_mode((s_width,s_height), pygame.FULLSCREEN)
-counterfont = pygame.font.Font('Fonts/DSEG14Modern-Regular.ttf', 350)
+score_font = pygame.font.Font('Fonts/DSEG14Modern-Regular.ttf', 350)
 # Loading images, Game_screen 14 images
 Game_screen = [pygame.image.load('Images/01-Ambient.png').convert(), \
                pygame.image.load('Images/02-Instruction-1.png').convert(), \
                pygame.image.load('Images/02-Instruction-2.png').convert(), \
                pygame.image.load('Images/02-Instruction-3.png').convert(), \
                pygame.image.load('Images/02-Instruction-4.png').convert(), \
+               #5
                pygame.image.load('Images/02-Instruction-4-Diagram.png').convert(), \
                pygame.image.load('Images/02-Instruction-4.png').convert(), \
                pygame.image.load('Images/02-Instruction-4-Diagram.png').convert(), \
                pygame.image.load('Images/03-InUse-Header.png').convert(), \
                pygame.image.load('Images/04-Finished-CTA.png').convert(), \
+               #10
                pygame.image.load('Images/04-Finished-Footer.png').convert(), \
                pygame.image.load('Images/04-Finished-Header.png').convert(), \
                pygame.image.load('Images/04-Finish-Initial.png').convert()]
@@ -83,8 +85,7 @@ Timebar_bg =  pygame.image.load('Images/03-InUse-ScoreBg.png').convert()
 
 Timebar =  pygame.image.load('Images/03-InUse-Timer.png').convert()
 
-Bg_screen = [pygame.image.load('Images/02-Instruction-Bg.png').convert(), \
-             pygame.image.load('Images/04-Finished-Bg.png').convert()]
+Bg_screen = [pygame.image.load('Images/02-Instruction-Bg.png').convert(), pygame.image.load('Images/04-Finished-Bg.png').convert()]
 
 # !!!!!!!!!!!  Set Pygame refresh rate variable = clock ??????????????????????????
 clock = pygame.time.Clock()
@@ -118,7 +119,6 @@ def idle_scrn():
     idle_slide = (Game_screen[0])
     fadeout_fps = 0
     stay_scrn = 0
-    
     a = 0
     leds.on(0)
     while starter01:
@@ -140,13 +140,80 @@ def idle_scrn():
             pygame.display.update()
         escape_quit()
 
+# Instruction screen sequence.
+# Playing all the instructions with screen time of !!!!!!!1!!!!!!!! seconds each
+def inst_seq():
+    inst_wait = True
+    escape_quit()
+    # Instruction 1
+    escape_quit()
+    screen.fill((255,255,255))
+    screen.blit(Bg_screen[0], (0,0))
+    screen.blit(Game_screen[1], (90,0))
+    pygame.display.update()
+    time.sleep(on_screen)
+    # Instruction 2
+    escape_quit()
+    screen.fill((255,255,255))
+    screen.blit(Bg_screen[0], (0,0))
+    screen.blit(Game_screen[2], (90,0))
+    pygame.display.update()
+    time.sleep(on_screen)
+    # Instruction 03
+    escape_quit()
+    screen.fill((255,255,255))
+    screen.blit(Bg_screen[0], (0,0))
+    screen.blit(Game_screen[4], (40,0))
+    screen.blit(Pattern_ins, (420,360))
+    pygame.display.update()
+    time.sleep(on_screen)
+    escape_quit()
+    # Instruction 04 screen
+    screen.fill((255,255,255))
+    screen.blit(Bg_screen[0], (0,0))
+    screen.blit(Game_screen[4], (70,1040))
+    screen.blit(Game_screen[6], (40,0))
+    pygame.display.update()
+    time.sleep(on_screen)
+    # Button 1 LED blink
+    while inst_wait:
+        escape_quit()
+        leds.on(0)
+        time.sleep(0.7)
+        for event in pygame.event.get():
+            if event.type == pygame.JOYBUTTONDOWN:
+                if event.button == 0:
+                    leds.off()
+                    print("Instruction segment...waiting to start...")
+                    return()
+        pygame.time.delay(1)
+        pygame.display.update()
+        escape_quit()
 
+# Final Score screen
+def final_Score():
+    final_time = time_lapsed
+    f_score = str(round(final_time, 2))
+    screen.fill((255,255,255))
+    screen.blit(Bg_screen, (0,0))
+    screen.blit(Game_screen[13], (50,10))
+    final_score = counterfont.render(f_score, 3, (0, 101, 177))
+    finalscore_rect = final_score.get_rect(center = screen.get_rect().center)
+    screen.blit(final_score, (580,470))
+    pygame.display.flip()
+    time.sleep(scorescn_time)
 
 
 # GAME PROPER ------------------------------------------------------------------------------------
-# buttons = joystickA.get_numbuttons()
 
+# Idle Screen
 idle_scrn()
+
+# Instructions
+inst_seq()
+
+# GAME PLAY SECTION --------------------
+score = 0
 start_Time = pygame.time.Clock()
 start = int(time.time())
 leds.off()
@@ -156,7 +223,14 @@ print(random_num)
 while time_Out != 30:
     #while game_running:
     for event in pygame.event.get():
-        print("For Event started")
+        print("For Event started, Game screen started")
+        screen.fill((255,255,255))
+        screen.blit(Bg_screen[0], (0,0))
+        screen.blit(Game_screen[8], (110,9))
+        score_text = score_font.render(str(score), 3, "red")
+        score_rect = score_text.get_rect(center = screen.get_rect().center)
+        screen.blit(score_text, (580,470))
+        pygame.display.update()
         if event.type == pygame.JOYBUTTONDOWN:
             print("If then, event type started")
             if event.button == random_num:
@@ -169,9 +243,17 @@ while time_Out != 30:
                 score += 1
     current_Time = int(time.time())
     time_Out = current_Time - start
-    print("TIMER: ", time_Out)
-    print(type(start_Time))
-    print(current_Time)
-    print(type(current_Time))
+    #print("TIMER: ", time_Out)
+    #print(type(start_Time))
+    #print(current_Time)
+    #print(type(current_Time))
+# FINAL SCORE ------------------------
+leds.off()
+screen.fill((255,255,255))
+screen.blit(Bg_screen[0], (0,0))
+screen.blit(Game_screen[12], (50,10))
+screen.blit(score_text, (580,470))
+pygame.display.flip()
+time.sleep(scorescn_time)
 print("Your Score: ", score)
 exit()

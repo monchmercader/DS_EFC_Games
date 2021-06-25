@@ -1,0 +1,14 @@
+{
+  "name": "picap-button-utility-js",
+  "version": "1.0.0",
+  "main": "button-utility.js",
+  "author": "Szymon Kaliski",
+  "license": "MIT",
+  "scripts": {
+    "start": "node button-utility.js"
+  },
+  "dependencies": {
+    "onoff": "^1.1.1",
+    "yargs": "^5.0.0"
+  }
+}

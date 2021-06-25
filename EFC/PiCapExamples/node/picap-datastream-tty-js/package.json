@@ -1,0 +1,13 @@
+{
+  "name": "picap-datastream-tty-js",
+  "version": "1.0.0",
+  "main": "datastream-tty.js",
+  "author": "Szymon Kaliski",
+  "license": "MIT",
+  "scripts": {
+    "start": "node datastream-tty.js"
+  },
+  "dependencies": {
+    "node-picap": "^1.0.0"
+  }
+}

@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+
+#*******************************************************************************
+#
+# Bare Conductive Pi Cap OSC Data Stream Utility Node.js Example Runner
+# ---------------------------------------------------------------------
+#
+# run - runs picap-datastream-osc.js
+#
+# Written by Stefan Dzisiewski-Smith
+#
+# This work is licensed under a MIT license https://opensource.org/licenses/MIT
+#
+# Copyright (c) 2016, Bare Conductive
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+#*******************************************************************************
+
+# make sure we're cd-ed into the script directory
+cd "$(dirname "$(readlink -f "${BASH_SOURCE}")")" || exit
+
+REQUIRED_NODE_VERSION="6.7.0"
+
+warn_about_node_version_and_quit(){
+    echo "Node.js v$REQUIRED_NODE_VERSION not found on your system. Please install it and try again."
+    exit
+}
+
+# if the system node is good enough, we don't need to do any NVM stuff
+if [[ ! $(dpkg --compare-versions $(node --version | tr -d [:alpha:]) "ge" $REQUIRED_NODE_VERSION) ]]; then 
+    # if the system node is not good enough, we should try using NVM to use the required version
+    if [[ -v NVM_DIR && -d "$NVM_DIR" ]]; then # check we actually have NVM
+        [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh" # ensure NVM is loaded
+        if [[ ! $( nvm ls | grep $REQUIRED_NODE_VERSION) ]]; then # NVM detected, but doesn't have the required version of node
+            warn_about_node_version_and_quit  
+        fi
+        nvm use $REQUIRED_NODE_VERSION > /dev/null
+    else 
+        warn_about_node_version_and_quit    
+    fi
+fi
+
+# put back any of the quotes that BASH removed
+# so we can show the user what we're running underneath
+execute_and_echo() {
+    args=''
+    whitespace="[[:space:]]"
+    for i in "$@"
+    do
+        if [[ $i =~ $whitespace ]]
+        then
+            i=\"$i\"
+        fi
+        args+="$i ";
+    done
+    echo "\$ $args"
+    bash -c "$args"
+}
+
+# install all necessary dependent packages
+npm install 2>/dev/null
+
+# add sudo if we need to - and pass all arguments to the target
+if [[ $EUID -ne 0 ]]; then
+    execute_and_echo sudo $(which node) ./datastream-osc.js "$@"
+else
+    execute_and_echo $(which node) ./datastream-osc.js "$@"
+fi
